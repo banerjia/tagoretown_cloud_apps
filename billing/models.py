@@ -154,7 +154,7 @@ class InvoiceItem(models.Model):
         ]
 
 
-class Credit(models.Model):
+class InvoiceItemCredit(models.Model):
     """ Model: Credit """
     invoice_item = models.ForeignKey(InvoiceItem)
     description = models.CharField(max_length = 128)
