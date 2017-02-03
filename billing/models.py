@@ -8,8 +8,11 @@ from django.utils import timezone
 """ Model Definitions """
 class Comment(models.Model):
     """ Model: Comment """
-    title = models.CharField(max_length=512)
-    text = models.TextField()
+    title = models.CharField(max_length = 512,
+                             null = True,
+                             blank = True)
+    text = models.TextField(null = True,
+                            blank = False)
     created_at = models.DateTimeField(editable=False,
                                       auto_now_add=True)
     content_type = models.ForeignKey(ContentType,
@@ -22,7 +25,25 @@ class Comment(models.Model):
             ['content_type','object_id', 'created_at']
         ]
 
+class Attachment(models.Model):
+    """Model: Attachment"""
+    title = models.CharField(max_length = 512,
+                             null = True,
+                             blank = True)
+    text = models.TextField(null = True,
+                            blank = False)
+    created_at = models.DateTimeField(editable=False,
+                                      auto_now_add=True)
+    cdn_url = models.CharField(max_length = 2048)
+    content_type = models.ForeignKey(ContentType,
+                                     on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
+    class Meta:
+        index_together = [
+            ['content_type','object_id', 'created_at']
+        ]
 
 class Customer(models.Model):
     """ Model: Customer """
@@ -148,7 +169,23 @@ class Credit(models.Model):
             ['invoice_item']
         ]
 
+class Transaction(models.Model):
+    """Model: Transaction"""
+    invoice = models.ForeignKey(Invoice)
+    title = models.CharField(max_length = 1024)
+    description = models.TextField(null = True,
+                                   blank = True)
+    amount = models.DecimalField(max_digits = 10,
+                                 decimal_places = 2,
+                                 default = 0.00)
+    successful = models.BooleanField(default = False)
+    attachment = GenericRelation(Attachment)
+    comment = GenericRelation(Comment)
+    date = models.DateField(auto_now = True)
 
+    def __str__(self):
+        return "{} - {}".format(self.invoice.number,
+                                self.title)
 
 """ Model Changes for Admin Interface """
 class CustomerAdmin(admin.ModelAdmin):
