@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url,include
 from django.contrib import admin
+from billing.views import select_customer
 
 urlpatterns = [
-    url(r'^billing/', include('billing.urls')),
+    url(r'^billing/(?P<oam_url_part>[a-zA-Z0-9\-\_]+)/', include('billing.urls')),
+    url(r'^billing/$', select_customer, name='customer_select'),
     url(r'^admin/', admin.site.urls),
 ]
