@@ -5,6 +5,8 @@ from .models import Address, \
                     Attachment, \
                     Customer, \
                     CustomerAdmin, \
+                    CustomerContact, \
+                    CustomerContactAdmin, \
                     Comment,\
                     Invoice, \
                     InvoiceAdmin, \
@@ -17,6 +19,7 @@ admin.site.register(Address, AddressAdmin)
 admin.site.register(Attachment)
 admin.site.register(Comment)
 admin.site.register(Customer, CustomerAdmin)
+admin.site.register(CustomerContact, CustomerContactAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(InvoiceItem, InvoiceItemAdmin)
 admin.site.register(InvoiceItemCredit)

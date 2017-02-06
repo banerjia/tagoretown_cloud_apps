@@ -89,6 +89,28 @@ class Address(models.Model):
             ['customer', 'active', 'label']
         ]
 
+class CustomerContact(models.Model):
+    """Model: CustomerContact"""
+    customer = models.ForeignKey(Customer,
+                                 on_delete = models.CASCADE)
+    name = models.CharField(max_length = 255)
+    email = models.EmailField(max_length = 512,
+                              null = True,
+                              blank = True)
+    phone = models.CharField(max_length = 30,
+                             null = True,
+                             blank = True)
+    active = models.BooleanField(default = True)
+    created_at = models.DateField(auto_now_add = True,
+                                  editable = False)
+
+    def __str__(self):
+        return "{} ({})".format(self.name, self.customer.name)
+
+    class Meta:
+            index_together = [
+                ['active', 'customer']
+            ]
 
 class Invoice(models.Model):
     """ Model: Invoice"""
@@ -205,6 +227,16 @@ class AddressAdmin(admin.ModelAdmin):
 
     class Meta:
         ordering = ['customer_name', 'label']
+
+class CustomerContactAdmin(admin.ModelAdmin):
+    """ Customer Contact Admin"""
+    list_display = ['active','customer_name', 'name', 'email', 'phone']
+
+    def customer_name(self, obj):
+        return obj.customer.name
+
+    class Meta:
+        ordering = ['customer_name', 'name']
 
 
 class InvoiceAdmin(admin.ModelAdmin):
