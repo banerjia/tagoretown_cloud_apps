@@ -1,0 +1,7 @@
+{% if customer_invoice_list %}
+  <ul>
+    {% for inv in customer_invoice_list %}
+      <li><a href="{% url 'billing:customer_invoice_detail' oam_url_part inv.number %}">{{ inv.number }}</a></li>
+    {% endfor %}
+  </ul>
+{% endif %}
