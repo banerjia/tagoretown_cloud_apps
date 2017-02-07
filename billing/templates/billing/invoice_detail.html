@@ -1,5 +1,5 @@
 {% load formatfilters %}
 <ul>
   <li>{{ invoice.number }}</li>
-  <li>{{ invoice.balance_due | currency}}</li>
+  <li>{{ invoice.amount | currency}}</li>
 </ul>
