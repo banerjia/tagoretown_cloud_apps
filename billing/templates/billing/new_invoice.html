@@ -1,5 +1,26 @@
-<h1>New Invoice</h1>
-<form action="{% url 'billing:customer_invoice_new' oam_url_part}" method="post">
-  {% csrf_token %}
-  {{ form }}
+<h1>New</h1>
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.customer }}
+    <br/>
+    {{ form.number.label_tag }}
+    {{ form.number }}
+    <br/>
+    {{ form.amount.label_tag }}
+    {{ form.amount }}
+    <button>Save</button>
 </form>
