@@ -15,12 +15,11 @@
 {% endif %}
 <form method="post">
     {% csrf_token %}
-    {{ form.customer }}
-    <br/>
-    {{ form.number.label_tag }}
-    {{ form.number }}
-    <br/>
-    {{ form.amount.label_tag }}
-    {{ form.amount }}
+    {% for field in form %}
+    <div class="row">
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">{{ field.label_tag }}</div>
+        <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12">{{ field }}</div>
+    </div>
+    {% endfor %}
     <button>Save</button>
 </form>

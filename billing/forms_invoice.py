@@ -13,7 +13,7 @@ class InvoiceForm(forms.ModelForm):
             'dated',
             'due_date',
             'finalized',
-            'comments',
+            'number'
         ]
         localized_fields = ('amount','due_date',)
 

@@ -21,11 +21,13 @@ def invoices(request, oam_url_part):
     customer_invoice_list = Invoice.objects \
         .filter(customer__oam_url_part=oam_url_part) \
         .order_by('-dated', '-date_added')
-    context = {
+    retval.update({
         'customer_invoice_list': customer_invoice_list,
         'oam_url_part': oam_url_part
-    }
-    return render(request, 'billing/invoices.html', context)
+    })
+    return render(request,
+                  'billing/invoices_index.html',
+                  retval)
 
 
 def invoice_detail(request, oam_url_part, invoice_number):
@@ -46,12 +48,21 @@ def new_invoice(request, oam_url_part):
     if request.method == "POST":
         form = InvoiceForm(request)
         if form.is_valid():
-            return HttpResponseRedirect('http://www.cnn.com')
+            return HttpResponseRedirect(
+                reverse("billing:customer_invoice_detail",
+                        kwargs={
+                            'oam_url_part': oam_url_part,
+                            'invoice_number': form.cleaned_data["number"]
+                        })
+            )
     else:
         customer = Customer.objects \
-                       .filter(oam_url_part=oam_url_part) \
-                       .only("name")[:1]
-        form = InvoiceForm()
+                       .filter(oam_url_part=oam_url_part)[:1][0]
+        form = InvoiceForm(
+            initial={
+                'customer': customer.id
+            }
+        )
 
     retval.update({
         'oam_url_part': oam_url_part,
@@ -59,9 +70,8 @@ def new_invoice(request, oam_url_part):
     })
 
     return render(request,
-                  'billing/new_invoice.html',
-                  retval
-                  )
+                  'billing/invoice_add_edit.html',
+                  retval)
 
 
 def edit_invoice(request, oam_url_part, invoice_number):
@@ -79,8 +89,7 @@ def edit_invoice(request, oam_url_part, invoice_number):
                         kwargs={
                             'oam_url_part': oam_url_part,
                             'invoice_number': form.cleaned_data["number"]
-                        }
-                )
+                        })
             )
     else:
         form = InvoiceForm(instance=invoice)
@@ -91,9 +100,8 @@ def edit_invoice(request, oam_url_part, invoice_number):
     })
 
     return render(request,
-                  'billing/new_invoice.html',
-                  retval
-                  )
+                  'billing/invoice_add_edit.html',
+                  retval)
 
 
 def invoice_pay(request, oam_url_part, invoice_number):
