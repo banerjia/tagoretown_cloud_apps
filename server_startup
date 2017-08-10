@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-
+rm -Rf node_modules/
+npm cache clean
+npm install --no-bin-links
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver 0.0.0.0:8000

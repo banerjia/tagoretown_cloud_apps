@@ -269,9 +269,9 @@ class InvoiceItemAdmin(admin.ModelAdmin):
         return obj.title or obj.description
 
     def credits(self, obj):
-        if (not obj.credit_set.exists()):
+        if (not obj.invoiceitemcredit_set.exists()):
             return 0
-        return obj.credit_set.aggregate(total_credits=Sum('amount'))['total_credits']
+        return obj.invoiceitemcredit_set.aggregate(total_credits=Sum('amount'))['total_credits']
 
     def actual_total(self, obj):
         return (obj.units * obj.cost_per_unit) - self.credits(obj)
