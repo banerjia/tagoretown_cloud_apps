@@ -75,11 +75,12 @@ WSGI_APPLICATION = 'tagoretown.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('BILLING_DB_NAME', 'django_tagoretown'),
         'USER': os.environ.get('BILLING_DB_USER', 'some_user'),
         'PASSWORD': os.environ.get('BILLING_DB_PASSWORD', ''),
         'HOST': os.environ.get('BILLING_DB_HOST', 'db'),
+        'PORT' : '5432'
     }
 }
 
