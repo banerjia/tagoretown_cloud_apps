@@ -1,9 +1,35 @@
+{% load formatfilters %}
 {% if customer_invoice_list %}
-  <ul>
+  <p>Subscribe to notifications for updates to selected invoices.</p>
+  <table style="width: 100%">
+    <caption>Invoices for {{customer_name}}</caption>
+    <thead>
+      <th scope="col">Select</th>
+      <th scope="col" style="width:20%">Number</th>
+      <th scope="col" style="width:20%">Date</th>
+      <th scope="col" style="width:20%">Amount</th>
+      <th scope="col" style="width:20%">Balance Due</th>
+      <th scope="col" style="width:20%">Attachments</th>
+    </thead>
+    <tbody>
     {% for inv in customer_invoice_list %}
-      <li><a href="{% url 'billing:customer_invoice_detail' oam_url_part inv.number %}">{{ inv.number }}</a></li>
+      <tr>
+        <td>
+          <input type="checkbox" name="" id="">
+        </td>
+        <th scope="row" style="text-align: center">
+          <a href="{% url 'billing:customer_invoice_detail' oam_url_part inv.number %}">
+            {{ inv.number }}
+          </a>
+        </th>
+        <td style="text-align: center">{{ inv.dated }}</td>
+        <td style="text-align: center">{{ inv.amount | currency }}</td>
+        <td style="text-align: center">{{ inv.balance_due | currency}}</td>
+        <td style="text-align: center">0</td>
+      </tr>
     {% endfor %}
+    </tbody>
   </ul>
+{% else %}
+  <p>No invoices available at this time for {{customer_name }}. If you would like to be notified when invoices are registered or updated for your company, please click here. </p>
 {% endif %}
-
-<a href="{% url 'billing:customer_invoice_new' oam_url_part %}">New Invoice</a>

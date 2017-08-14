@@ -7,13 +7,12 @@ class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
         fields = [
+            'number',
+            'customer',
             'amount',
             'balance_due',
-            'customer',
             'dated',
             'due_date',
             'finalized',
-            'number'
         ]
         localized_fields = ('amount','due_date',)
-

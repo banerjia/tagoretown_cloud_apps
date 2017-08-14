@@ -1,5 +1,58 @@
 {% load formatfilters %}
-<ul>
-  <li>{{ invoice.number }}</li>
-  <li>{{ invoice.amount | currency}}</li>
-</ul>
+<div class="row">
+  <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+    <div class="row">
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Dated</div>
+      <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">{{ invoice.dated }}</div>
+    </div>
+    <div class="row">
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Invoice Number</div>
+      <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">{{ invoice.number }}</div>
+    </div>
+    <div class="row">
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Amount</div>
+      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">{{ invoice.amount | currency}}</div>
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Balance Due</div>
+      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">{{ invoice.balance_due | currency }}</div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <table class="table table-condensed">
+          <caption>Itemized Items</caption>
+          <thead>
+            <th scope="col">Item</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+          </thead>
+          <tfoot>
+            <tr>
+              <thead scope="row" colspan="3" style="text-align: right"></thead>
+              <td style="text-align: right">{ invoice.amount | currency}</td>
+            </tr>
+          </tfoot>
+          <tbody>
+            {% for invoiceitem in invoice.invoiceitem_set. %}
+              <tr>
+                <td>
+                  {{ invoiceitem.title }}
+                  <br>
+                  {{ invoiceitem.description }}
+                </td>
+                <td>
+                  {{ invoiceitem.cost_per_unit | currency }}
+                </td>
+                <td>
+                  {{ invoiceitem.units }}
+                </td>
+                <td>
+                  {{ invoiceitem.total | currency }}
+                </td>
+              </tr>
+            {% end %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

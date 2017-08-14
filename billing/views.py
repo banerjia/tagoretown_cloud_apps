@@ -2,9 +2,9 @@ from django.shortcuts import get_object_or_404, \
     render, \
     reverse
 from django.http import HttpResponseRedirect
-
 from .models import Invoice, Customer
 from .forms_invoice import InvoiceForm
+import redis
 
 retval = {}
 
@@ -18,12 +18,24 @@ def index(request, oam_url_part):
 
 
 def invoices(request, oam_url_part):
+    redis_key_company_name = oam_url_part + "_company_name"
+
     customer_invoice_list = Invoice.objects \
-        .filter(customer__oam_url_part=oam_url_part) \
-        .order_by('-dated', '-date_added')
+        .filter(customer__oam_url_part__exact=oam_url_part) \
+        .order_by('-dated', '-date_added') \
+        .only('id', 'number', 'amount', 'balance_due')
+
+    r = redis.StrictRedis(host='cache_srv', port=6379, db=0)
+    customer_name = r.get(redis_key_company_name)
+
+    if customer_name is None:
+        customer_name = Customer.objects.get(oam_url_part__exact= oam_url_part)
+        r.set(redis_key_company_name, customer_name)
+
     retval.update({
         'customer_invoice_list': customer_invoice_list,
-        'oam_url_part': oam_url_part
+        'oam_url_part': oam_url_part,
+        'customer_name': customer_name
     })
     return render(request,
                   'billing/invoices_index.html',
@@ -31,11 +43,13 @@ def invoices(request, oam_url_part):
 
 
 def invoice_detail(request, oam_url_part, invoice_number):
-    queryset = Invoice.objects \
-                   .filter(customer__oam_url_part=oam_url_part,
-                           number=invoice_number) \
-                   .only('number', 'amount')[:1]
-    invoice = get_object_or_404(queryset)
+    qs_invoice = Invoice.objects \
+                   .prefetch_related('invoiceitem_set',
+                                     'invoiceitem_set__invoiceitemcredit_set') \
+                   .filter(customer__oam_url_part__iexact = oam_url_part,
+                           number=invoice_number)[:1]
+
+    invoice = get_object_or_404(qs_invoice)
     return render(request,
                   'billing/invoice_detail.html',
                   {
