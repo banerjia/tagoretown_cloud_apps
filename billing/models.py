@@ -179,6 +179,7 @@ class InvoiceItem(models.Model):
         return self.title or self.description
 
     class Meta:
+        ordering = ['sequence_order']
         index_together = [
             ['invoice']
         ]

@@ -6,7 +6,9 @@ from .models import Invoice, Customer
 from .forms_invoice import InvoiceForm
 import redis
 
-retval = {}
+retval = {
+
+}
 
 
 def select_customer(request):
@@ -54,7 +56,8 @@ def invoice_detail(request, oam_url_part, invoice_number):
                   'billing/invoice_detail.html',
                   {
                       'oam_url_part': oam_url_part,
-                      'invoice': invoice
+                      'invoice': invoice,
+                      'page_title': 'View'
                   })
 
 
