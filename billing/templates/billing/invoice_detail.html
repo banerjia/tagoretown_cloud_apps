@@ -50,7 +50,7 @@
                     <td style="text-align: right" colspan="3">
                       {{ itc.description }}
                     </td>
-                    <td style="text-align:right">
+                    <td style="text-align:right;color:Red">
                       {{ itc.amount|multiply:-1|currency  }}
                     </td>
                   </tr>
@@ -66,6 +66,42 @@
           </tfoot>
         </table>
       </div>
+    </div>
+  </div>
+  {% endif %}
+  {% if invoice.comments.count > 0 %}
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <h2 class="h2">Comments</h2>
+      <ul>
+        {% for comment in invoice.comments.all %}
+          <li>
+              <p>{{ comment.created_at }}</p>
+              <p style="padding-left: 1em">
+                {{ comment.text }}
+              </p>
+          </li>
+        {% endfor %}
+      </ul>
+
+    </div>
+  </div>
+  {% endif %}
+  {% if invoice.attachments.count > 0 %}
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <h2 class="h2">Attachments</h2>
+      <ul>
+        {% for attachment in invoice.attachments.all %}
+          <li>
+              <p>{{ attachment.title }}</p>
+              <p style="padding-left: 1em">
+                {{ attachment.cdn_url }}
+              </p>
+          </li>
+        {% endfor %}
+      </ul>
+
     </div>
   </div>
   {% endif %}

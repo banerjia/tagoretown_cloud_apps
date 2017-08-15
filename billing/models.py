@@ -23,6 +23,7 @@ class Comment(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
+        ordering = ['-created_at']
         index_together = [
             ['content_type', 'object_id', 'created_at']
         ]
@@ -46,6 +47,7 @@ class Attachment(models.Model):
                                       auto_now_add=True)
 
     class Meta:
+        ordering = ['-created_at']
         index_together = [
             ['content_type', 'object_id', 'created_at']
         ]
@@ -135,6 +137,7 @@ class Invoice(models.Model):
                                 blank=True)
     finalized = models.BooleanField(default=False)
     comments = GenericRelation(Comment)
+    attachments = GenericRelation(Attachment)
     date_added = models.DateTimeField(auto_now_add=True,
                                       editable=False)
     last_updated = models.DateTimeField(auto_now=True,

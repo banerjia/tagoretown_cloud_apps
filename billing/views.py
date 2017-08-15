@@ -47,7 +47,9 @@ def invoices(request, oam_url_part):
 def invoice_detail(request, oam_url_part, invoice_number):
     qs_invoice = Invoice.objects \
                    .prefetch_related('invoiceitem_set',
-                                     'invoiceitem_set__invoiceitemcredit_set') \
+                                     'invoiceitem_set__invoiceitemcredit_set',
+                                     'comments',
+                                     'attachments') \
                    .filter(customer__oam_url_part__iexact = oam_url_part,
                            number=invoice_number)[:1]
 
