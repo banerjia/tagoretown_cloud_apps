@@ -4,6 +4,7 @@
 
 <head>
      <meta charset="UTF-8">
+     <meta content="width=device-width,initial-scale=1" name=viewport>
      <title>
        {% if browser_title is not None %}
         {{ browser_title }}
@@ -13,8 +14,7 @@
          Default Page
        {% endif %}
      </title>
-     <meta name="description" content="DESCRIPTION">
-
+     <link rel="stylesheet" href="{% static "billing/dist/bundle.min.css" %}" media="screen" />
      <!--[if lt IE 9]>
        <script src = "http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
      <![endif]-->
@@ -31,7 +31,7 @@
     </div>
     {% block main_body %}
     {% endblock %}
-    <script type="text/javascript" src="{% static "billing/dist/bundle.js" %}"></script>
+    <script type="text/javascript" src="{% static "billing/dist/bundle.min.js" %}"></script>
   </div>
  </body>
 

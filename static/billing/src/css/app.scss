@@ -1,3 +1,9 @@
-h1{
-  color: 'Red';
+@import "../bootstrap/scss/bootstrap";
+
+div.container{
+  table.table{
+    caption{
+      display: none;
+    }
+  }
 }

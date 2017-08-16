@@ -1,6 +1,3 @@
-require('babel-polyfill');
-require('jquery');
+require('jquery/dist/jquery');
+require('popper.js/dist/umd/popper');
 require('bootstrap');
-
-console.log('Is App ready?');
-console.log('App loaded');
