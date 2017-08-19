@@ -3,12 +3,12 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  entry: [
-    './static/billing/src/js/app.js',
-    './static/billing/src/css/app.scss',
-  ],
+  entry: {
+    app:['./static/billing/src/js/app.js',
+      './static/billing/src/css/app.scss',],
+  },
   output: {
-    filename: 'bundle.min.js',
+    filename: '[name].min.js',
     path: path.resolve(__dirname, 'static/billing/dist'),
   },
   module:{
@@ -39,7 +39,7 @@ module.exports = {
     ],
   },
   plugins: [
-      new ExtractTextPlugin("bundle.min.css"),
+      new ExtractTextPlugin("[name].min.css"),
       new webpack.optimize.UglifyJsPlugin({
         compress: { warnings: false }
       }),
