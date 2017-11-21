@@ -255,12 +255,42 @@ class CustomerContactAdmin(admin.ModelAdmin):
     class Meta:
         ordering = ['customer_name', 'name']
 
+class InvoiceItemCreditInline(admin.TabularInline):
+    model = InvoiceItemCredit
+
+class InvoiceItemInline(admin.TabularInline):
+    model = InvoiceItem
+    fields = ('title', 'description','cost_per_unit','units')
+
+    def save_model(self, request, obj, form, change):
+        obj.total = obj.cost_per_unit * obj.units
+        return super(InvoiceItemInline, self).save_model(request, obj, form, change)
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ['dated', 'amount', 'balance_due', 'due_date']
+    """ List Page Options """
+    list_display = ('dated', 'amount', 'balance_due', 'due_date')
+    list_select_related = ('customer',)
+    list_filter = ('customer__name', )
+    list_per_page = 10
+
+    """ CRUD Form Option """
+    fields = ('customer', 'number','amount', 'dated', 'due_date','finalized')
+    inlines = [InvoiceItemInline,]
+
+
+    def save_model(self, request, obj, form, change):
+        obj.balance_due = obj.amount
+        return super(InvoiceAdmin, self).save_model(request, obj, form, change)
+
+    def save_related(self, request, form, formsets, change):
+        for formset in formsets:
+            formset.fields['total'].value = formset.fields['cost_per_unit'].value * formset.fields['units'].value
+            self.save_formset(request,form,formset, change = change)
+        self.save_model(request, form.instance, form, change)
 
     def total(self, obj):
         return 0
+
 
     class Meta:
         ordering = ['-dated']
@@ -279,6 +309,10 @@ class InvoiceItemAdmin(admin.ModelAdmin):
 
     def actual_total(self, obj):
         return (obj.units * obj.cost_per_unit) - self.credits(obj)
+
+    def save_model(self, request, obj, form, change):
+        obj.total = obj.cost_per_unit * obj.units
+        return super(InvoiceItemAdmin, self).save_model(request, obj, form, change)
 
     class Meta:
         ordering = ['invoice', 'sequence_order']
