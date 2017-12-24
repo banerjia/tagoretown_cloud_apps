@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
+import decimal
 
 """ Model Definitions """
 
@@ -282,14 +283,15 @@ class InvoiceAdmin(admin.ModelAdmin):
         obj.balance_due = obj.amount
         return super(InvoiceAdmin, self).save_model(request, obj, form, change)
 
+
     def save_related(self, request, form, formsets, change):
         for formset in formsets:
-            formset.fields['total'].value = formset.fields['cost_per_unit'].value * formset.fields['units'].value
-            self.save_formset(request,form,formset, change = change)
-        self.save_model(request, form.instance, form, change)
+            for f in formset:
+                obj = f.instance
+                total = obj.units.value() * obj.cost_per_unit.value()
+                obj.total = total
+            super(InvoiceAdmin, self).save_formset(request, form, formset, change=change)
 
-    def total(self, obj):
-        return 0
 
 
     class Meta:
